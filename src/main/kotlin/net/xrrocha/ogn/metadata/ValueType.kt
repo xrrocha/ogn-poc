@@ -49,9 +49,6 @@ object ValueTypes {
       format = object : ValueTypeFormat<LocalDateTime> {
         private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd['T'HH:mm:ss]")
 
-        private val localDateTimeQuery = TemporalQuery<LocalDateTime> { accessor -> LocalDateTime.from(accessor) }
-
-
         override fun format(value: LocalDateTime): String = value.format(formatter)
         override fun parse(string: String): LocalDateTime {
           @Suppress("UNCHECKED_CAST")
