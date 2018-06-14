@@ -12,7 +12,11 @@ abstract class Type(override val name: String) : Named {
 
 object Types {
 
-  private val types = HashMap<String, Type>()
+  private val types = hashMapOf<String, Type>()
 
   fun newType(type: Type) = types.put(type.name, type)
+
+  fun getType(typeName: String) = types[typeName]
+
+  fun allTypes() = listOf(*types.values.toTypedArray())
 }
