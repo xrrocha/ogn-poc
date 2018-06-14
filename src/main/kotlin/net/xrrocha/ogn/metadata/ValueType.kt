@@ -2,12 +2,14 @@ package net.xrrocha.ogn.metadata
 
 import java.math.BigDecimal
 import java.text.DecimalFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalQuery
 
 interface ValueTypeFormat<T> {
-  fun format(t: T): String
-  fun parse(s: String): T
+  fun format(value: T): String
+  fun parse(string: String): T
 }
 
 data class ValueType<T>(override val name: String,
@@ -19,8 +21,8 @@ object ValueTypes {
   val StringVT = ValueType(
       name = "String",
       format = object : ValueTypeFormat<String> {
-        override fun format(t: String): String = t
-        override fun parse(s: String): String = s
+        override fun format(value: String): String = value
+        override fun parse(string: String): String = string
       })
 
   val IntegerVT = ValueType(
@@ -45,10 +47,26 @@ object ValueTypes {
   val DateTimeVT = ValueType(
       name = "DateTime",
       format = object : ValueTypeFormat<LocalDateTime> {
-        val formatter = DateTimeFormatter.ISO_DATE_TIME
+        private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd['T'HH:mm:ss]")
 
-        override fun format(t: LocalDateTime): String = t.format(formatter)
-        override fun parse(s: String): LocalDateTime = LocalDateTime.parse(s, formatter)
+        private val localDateTimeQuery = TemporalQuery<LocalDateTime> { accessor -> LocalDateTime.from(accessor) }
+
+
+        override fun format(value: LocalDateTime): String = value.format(formatter)
+        override fun parse(string: String): LocalDateTime {
+          @Suppress("UNCHECKED_CAST")
+          val temporalAccessor = formatter.parseBest(string,
+              TemporalQuery<LocalDateTime> { LocalDateTime.from(it) },
+              TemporalQuery<LocalDate> { LocalDate.from(it) })
+
+          return when (temporalAccessor) {
+            is LocalDateTime -> temporalAccessor
+            is LocalDate -> temporalAccessor.atStartOfDay()
+            else ->
+              throw IllegalStateException("Unexpected type: ${temporalAccessor.javaClass.name}")
+          }
+
+        }
       }
   )
 }
@@ -64,9 +82,9 @@ data class DecimalValueTypeFormat<T : Number>(val pattern: String,
     format
   }
 
-  override fun format(t: T): String = decimalFormat.format(t)
+  override fun format(value: T): String = decimalFormat.format(value)
 
-  override fun parse(s: String): T = conversion(decimalFormat.parse(s))
+  override fun parse(string: String): T = conversion(decimalFormat.parse(string))
 }
 
 
