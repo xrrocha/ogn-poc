@@ -51,7 +51,7 @@ object ValueTypes {
 
         override fun format(value: LocalDateTime): String = value.format(formatter)
         override fun parse(string: String): LocalDateTime {
-          @Suppress("UNCHECKED_CAST")
+          @Suppress("UncheckedCast")
           val temporalAccessor = formatter.parseBest(string,
               TemporalQuery<LocalDateTime> { LocalDateTime.from(it) },
               TemporalQuery<LocalDate> { LocalDate.from(it) })

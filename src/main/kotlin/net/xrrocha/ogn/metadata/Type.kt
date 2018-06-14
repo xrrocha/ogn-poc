@@ -1,11 +1,9 @@
 package net.xrrocha.ogn.metadata
 
-interface Named {
-  val name: String
-}
+abstract class Type(open val name: String) {
 
-abstract class Type(override val name: String) : Named {
   init {
+    @Suppress("LeakingThisInConstructor")
     Types.newType(this)
   }
 }
