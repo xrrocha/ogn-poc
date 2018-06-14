@@ -1,6 +1,10 @@
 package net.xrrocha.ogn.metadata
 
-abstract class Type(open val name: String) {
+interface Type {
+  val name: String
+}
+
+abstract class BaseType(override val name: String) : Type {
 
   init {
     @Suppress("LeakingThisInConstructor")
@@ -10,9 +14,9 @@ abstract class Type(open val name: String) {
 
 object Types {
 
-  private val types = hashMapOf<String, Type>()
+  private val types = hashMapOf<String, BaseType>()
 
-  fun newType(type: Type) = types.put(type.name, type)
+  fun newType(type: BaseType) = types.put(type.name, type)
 
   fun getType(typeName: String) = types[typeName]
 
