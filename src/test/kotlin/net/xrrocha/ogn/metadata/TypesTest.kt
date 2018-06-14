@@ -13,7 +13,7 @@ class TypesTest {
     val dummyName = "dummyType"
     assertNull(Types.getType(dummyName))
 
-    val dummyType = object: Type(dummyName){}
+    val dummyType = object: BaseType(dummyName){}
     assertEquals(dummyType, Types.getType(dummyName))
     assertEquals(allTypes.size + 1, Types.allTypes().size)
   }
