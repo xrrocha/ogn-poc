@@ -1,15 +1,29 @@
 package net.xrrocha.ogn.metadata
 
-import net.xrrocha.ogn.metadata.ValueTypes.IntegerVT
-import net.xrrocha.ogn.metadata.ValueTypes.StringVT
-import net.xrrocha.ogn.metadata.ValueTypes.RealVT
-import net.xrrocha.ogn.metadata.ValueTypes.DecimalVT
 import net.xrrocha.ogn.metadata.ValueTypes.DateTimeVT
+import net.xrrocha.ogn.metadata.ValueTypes.DecimalVT
+import net.xrrocha.ogn.metadata.ValueTypes.IntegerVT
+import net.xrrocha.ogn.metadata.ValueTypes.RealVT
+import net.xrrocha.ogn.metadata.ValueTypes.StringVT
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.DAYS
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+
+class RegexStringTest {
+  @Test
+  fun validatesRegex() {
+    val validator = RegexString("name", "[\\p{Alpha}]+", "Invalid name")
+
+    validator.validate("Neo")
+
+    assertFailsWith(IllegalArgumentException::class) {
+      validator.validate("!@#$%^&*()_+")
+    }
+  }
+}
 
 class StringVTTest {
   @Test
