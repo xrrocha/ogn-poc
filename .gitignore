@@ -1,3 +1,4 @@
+._*
 attic/
 build/
 dist/
@@ -6,3 +7,4 @@ dist/
 *.iml
 node_modules/
 scratchpad
+target/
